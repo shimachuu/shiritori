@@ -37,7 +37,11 @@
             
             <div class="col-lg-6 order-lg-1">
                 <div class="p-5">
-                    <h2 class="display-4">しりとりの旅を<br>始める</h2>
+                    <h2 class="display-4">
+                        <!---'stapp:'がないとurlを逆引きできなかった-->
+                        <a href="{% url 'stapp:new_game' %}">しりとりの旅を<br>始める</a>
+                    </h2>
+                    
                 </div>
             </div>
         

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Prefecture, MstTestStation
+from .models import Prefecture, MstTestStation, TestGame
 
 # django-import-exportsの設定
 from import_export import resources
@@ -45,3 +45,4 @@ class MstTestStationAdmin(ImportExportModelAdmin):
 
 admin.site.register(Prefecture, PrefectureAdmin)
 admin.site.register(MstTestStation, MstTestStationAdmin)
+admin.site.register(TestGame)
