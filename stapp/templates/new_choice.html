@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}New Choice｜JR駅名しりとりの旅ゲーム{% endblock %}
+
+{% block header %}
+
+<header class="masthead text-center text-white">
+    <div class="masthead-content">
+        <div class="container">
+            <h1 class="masthead-heading mb-0">New Choice</h1>
+        </div>
+    </div>
+
+</header>
+
+
+{% endblock %}
+
+{% block contents %}
+
+<h2>New Choice</h2>
+<form method="POST" class="post-form">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary btn-xl rounded-pill mt-5">Save</button>
+</form>
+
+
+
+{% endblock %}

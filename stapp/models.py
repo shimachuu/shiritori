@@ -44,3 +44,9 @@ class TestGame(models.Model):
     def __str__(self):
         return 'from ' + self.start_station.name_kata + ' to ' + self.goal_station.name_kata
 
+class TestChoice(models.Model):
+    game = models.ForeignKey(TestGame, on_delete=models.CASCADE)
+    station = models.ForeignKey(MstTestStation, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.station.name_kata
