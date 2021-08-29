@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Goal｜JR駅名しりとりの旅ゲーム{% endblock %}
+
+{% block header %}
+
+
+
+{% endblock %}
+
+{% block contents %}
+
+<p>
+    <br><br><br><br>
+</p>
+<h2>Goal!!! Congratulations!!!</h2>
+
+    <button onclick="location.href='{% url 'stapp:index' %}'" class="btn btn-primary btn-xl rounded-pill mt-5">Back</button>
+
+
+{% endblock %}

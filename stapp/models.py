@@ -40,6 +40,7 @@ class TestGame(models.Model):
     goal_station = models.ForeignKey(MstTestStation, on_delete=models.PROTECT, related_name='goal_staion')
     goal_letter = models.CharField(max_length=1)
     start_date = models.DateTimeField(default=timezone.now)
+    is_finished = models.BooleanField(default=False)
 
     def __str__(self):
         return 'from ' + self.start_station.name_kata + ' to ' + self.goal_station.name_kata

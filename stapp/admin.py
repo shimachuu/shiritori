@@ -41,9 +41,13 @@ class MstTestStationAdmin(ImportExportModelAdmin):
     ordering = ['first_letter']
     search_fields = ['first_letter']
 
+class TestGameAdmin(admin.ModelAdmin):
+    list_display = ('player','start_station','start_letter','goal_station','goal_letter','start_date','is_finished')
 
+class TestChoiceAdmin(admin.ModelAdmin):
+    list_display = ('game', 'station')
 
 admin.site.register(Prefecture, PrefectureAdmin)
 admin.site.register(MstTestStation, MstTestStationAdmin)
-admin.site.register(TestGame)
-admin.site.register(TestChoice)
+admin.site.register(TestGame, TestGameAdmin)
+admin.site.register(TestChoice, TestChoiceAdmin)

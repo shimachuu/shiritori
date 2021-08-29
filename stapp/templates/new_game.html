@@ -12,16 +12,12 @@
 
 {% block contents %}
 
-<p>
-    <br><br><br><br>
-</p>
+
 <h2>New Game</h2>
 <form method="POST" class="post-form">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary btn-xl rounded-pill mt-5">Save</button>
 </form>
-
-
 
 {% endblock %}

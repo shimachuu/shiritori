@@ -8,6 +8,12 @@ class TestGameForm(forms.ModelForm):
     class Meta:
         model = TestGame
         fields = ('start_station', 'goal_station',)
+        
+        # widgetの種類　https://docs.djangoproject.com/en/3.2/ref/forms/widgets/#django.forms.SelectDateWidget
+        widgets = {
+            'start_station': forms.RadioSelect, 
+            'goal_station': forms.RadioSelect,
+        }
 
 
 class TestChoiceForm(forms.ModelForm):
