@@ -1,11 +1,28 @@
+
+/* cssが反映されないときは、
+chromeの更新ボタン右クリック→「キャッシュの消去とハード再読み込み」 */
+
+h2 {
+    color: darkorchid;
+}
+
 body {
     padding-left: 15px;
 }
 
-body, #wrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+
+/* ポッチなし */
+ul {
+    list-style-type: none;
+    width: 1000px;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+li {
+    background-color: lightgray;
+    border: solid 1px black;
 }
 
 footer {

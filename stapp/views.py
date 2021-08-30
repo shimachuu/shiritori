@@ -1,9 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from urllib.parse import urlencode
 from django.views import generic
 from .models import Prefecture, MstTestStation, TestGame, TestChoice
-from .forms import TestGameForm, TestChoiceForm
+from .forms import TestChoiceForm, TestGameForm
 
 from django.http import HttpResponse
 
@@ -19,8 +19,10 @@ class GoalView(TemplateView):
 
 
 
-# new_gameもFormViewで書き換えられると思う
+# new_gameもFormViewで書き換えられると思う　→ 8/29 書き換えた
 # render(url)での変数受け渡しを脱する必要がある
+
+'''関数ベースver
 def new_game(request):
 
     if request.method == "POST":
@@ -58,7 +60,59 @@ def new_game(request):
     else: # ← methodが'POST'ではない = 最初のページ表示時の処理
         form = TestGameForm()
     return render(request, 'new_game.html', {'form': form})
+'''
 
+
+# クラスベースビューに書き換え
+class NewGame(CreateView):
+    # model = TestGame
+    # fields = ['start_station', 'goal_station']
+    
+    form_class = TestGameForm
+    template_name = 'new_game.html'
+    
+
+    # templateに都道府県リストを渡す
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['parentcategory_list'] = Prefecture.objects.all()
+        # context['station_list'] = MstTestStation.objects.filter(is_ends_n=False)
+        return context
+
+
+    # formに抜け漏れがなければ行う
+    def form_valid(self, form):
+        form.instance.player = self.request.user
+
+        # スタート地点の尻文字を、1選択目に渡す
+        # 'instance'がないとダメらしい
+        form.instance.start_letter = form.instance.start_station.last_letter
+
+        # ゴール地点の頭文字をゲームIDに登録しておく（ゴール判定に使う）
+        form.instance.goal_letter = form.instance.goal_station.first_letter
+
+        return super().form_valid(form)
+
+
+    def get_success_url(self):
+        # 最初の駅選択に必要な情報を変数（dictionary型）にまとめ、url連結用に変換
+        params = urlencode({
+            'game': self.object.pk,
+            'start_letter': self.object.start_letter,
+            'goal_letter': self.object.goal_letter,
+        })
+
+        # 選択画面(urlのname='new_choice')のパスを取得
+        redirect_url = reverse('stapp:new_choice')
+
+        #ゲームIDを渡して選択画面へ移動＝'views.new_choice'を呼び出す
+        url = f'{redirect_url}?{params}' # 'f'について　https://note.nkmk.me/python-f-strings/
+        
+        return url
+
+# as_view()はViewに付属の関数。
+# クロージャであるview(request, *args, **kwargs)関数を返す
+new_game = NewGame.as_view()
 
 
 '''
@@ -106,17 +160,26 @@ class NewChoice(CreateView):
     def get_success_url(self):
         
         # 選択を変数に格納
-        chosen_station = MstTestStation.objects.get(pk=self.request.POST.get('station'))
-        game = TestGame.objects.get(pk=self.request.POST.get('game'))
+        chosen_station = self.object.station
+        game = self.object.game
 
         # 選択駅がゴール駅だったらゴールのページに飛ぶ
+        # ゴール判定は https://qiita.com/maisuto/items/33dfeb58f5953d1c5fdf の
+        # 「投票処理」を参考にして実装
         if chosen_station == game.goal_station:
             url = reverse('stapp:goal')
+            # return resolve_url('polls:results', self.kwargs['pk'])
+            # しりとりの軌跡を表示したい
+
+            # is_finishedをtrueに書き換える
+            game_finished = get_object_or_404(TestGame, pk=game.pk)
+            game_finished.is_finished = True
+            game_finished.save()
         else:
             params = urlencode({
-                'game': self.request.POST.get('game'),
+                'game': game.pk,
                 'start_letter': chosen_station.last_letter,
-                })
+            })
 
             # 選択画面(urlのname='new_choice')のパスを取得
             redirect_url = reverse('stapp:new_choice')
@@ -127,10 +190,18 @@ class NewChoice(CreateView):
         return url
 
 
+    '''def goal(pk):
+        game = get_object_or_404(TestGame, pk=pk)
+        try:
+            selected_choice = question.choice_set.get(pk=request.POST['choice'])
+        except (KeyError, Choice.DoesNotExist):
+            return render(request, 'polls/detail.html', {
+                'question': question,
+                'error_message': "You didn't select a choice.",
+            })
+        else:
+        game.is_finished = True
+        game.save()
+        #return reverse('stapp:goal')'''
 
-    # ゴール判定は https://qiita.com/maisuto/items/33dfeb58f5953d1c5fdf の
-    # 「投票処理」を参考にして実装しよう
-
-# as_view()はViewに付属の関数。
-# クロージャであるview(request, *args, **kwargs)関数を返す
 new_choice = NewChoice.as_view()

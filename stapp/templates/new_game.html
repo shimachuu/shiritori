@@ -7,17 +7,123 @@
 {% block header %}
 
 
-
 {% endblock %}
 
 {% block contents %}
 
-
-<h2>New Game</h2>
-<form method="POST" class="post-form">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-primary btn-xl rounded-pill mt-5">Save</button>
-</form>
+    <h2>New Game</h2>
+    <form method="POST" class="post-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary btn-xl rounded-pill mt-5">Save</button>
+    </form>
 
 {% endblock %}
+
+{% block extrajs %}
+
+    <script>
+
+        // 選択した都道府県に合わせて駅名を表示
+
+        
+        // この'#id'はformのfield名と一致させる
+        const parentCategoryElement = $('#id_start_prf');
+        const categoryElement = $('#id_start_station');
+        
+        const goalPrfElement = $('#id_goal_prf');
+        const goalStationElemnt = $('#id_goal_station');
+
+
+        //categoriesはstartとgoalで共通部品
+        const categories = {
+
+            {% for prf in parentcategory_list %}
+                '{{ prf.prf_no }}': [
+                    {% for station in prf.mstteststation_set.all %}
+                        {
+                            'pk': '{{ station.pk }}',
+                            'name': '{{ station.name_kanji }}'
+                        },
+                    {% endfor %}
+                ],
+            {% endfor %}
+
+        };
+
+
+        // for start_station
+        const changeCategory = (select) => {
+            // 子カテゴリの選択欄を空にする。
+            categoryElement.children().remove();
+
+            // 選択した親カテゴリに紐づく子カテゴリの一覧を取得する。
+            const parentId = parentCategoryElement.val();
+            const categoryList = categories[parentId];
+
+            // 子カテゴリの選択肢を作成・追加。
+            for (const category of categoryList) {
+                const option = $('<option>');
+                option.val(category['pk']);
+                option.text(category['name']);
+                categoryElement.append(option);
+            }
+
+            // 指定があれば、そのカテゴリを選択する
+            if (select !== undefined) {
+                categoryElement.val(select);
+            }
+        };
+
+
+        $('#id_start_prf').on('change', () => {
+            changeCategory();
+        });
+
+
+        // 入力値に問題があって再表示された場合、ページ表示時点で小カテゴリが絞り込まれるようにする
+        if (parentCategoryElement.val()) {
+            const selectedCategory = categoryElement.val();
+            changeCategory(selectedCategory);
+        }
+
+
+        // for goal_station
+        const changePrf = (select) => {
+            // 子カテゴリの選択欄を空にする。
+            goalStationElemnt.children().remove();
+
+            // 選択した親カテゴリに紐づく子カテゴリの一覧を取得する。
+            const prfId = goalPrfElement.val();
+            const stationList = categories[prfId];
+
+            // 子カテゴリの選択肢を作成・追加。
+            for (const station of stationList) {
+                const goalOption = $('<option>');
+                goalOption.val(station['pk']);
+                goalOption.text(station['name']);
+                goalStationElemnt.append(goalOption);
+            }
+
+            // 指定があれば、そのカテゴリを選択する
+            if (select !== undefined) {
+                goalStationElemnt.val(select);
+            }
+        };
+
+
+        $('#id_goal_prf').on('change', () => {
+            changePrf();
+        });
+
+
+        // 入力値に問題があって再表示された場合、ページ表示時点で小カテゴリが絞り込まれるようにする
+        if (goalPrfElement.val()) {
+            const selectedStation = goalStationElemnt.val();
+            changePrf(selectedStation);
+        }
+
+    </script>
+
+{% endblock %}
+
