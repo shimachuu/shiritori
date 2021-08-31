@@ -2,18 +2,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse, reverse_lazy
 from urllib.parse import urlencode
 from django.views import generic
+from django.http import HttpResponse
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
+
 from .models import Prefecture, MstTestStation, TestGame, TestChoice
 from .forms import TestChoiceForm, TestGameForm
-
-from django.http import HttpResponse
-
 from django.views.generic import CreateView, TemplateView
+
 
 # Create your views here.
 
 class IndexView(TemplateView):
     template_name = "index.html"
 
+@method_decorator(login_required, name='dispatch')
 class GoalView(TemplateView):
     template_name = "goal.html"
 
@@ -64,6 +67,8 @@ def new_game(request):
 
 
 # クラスベースビューに書き換え
+# デコレータについて　https://programming.sincoston.com/django-classbaseview-decorator/
+@method_decorator(login_required, name='dispatch')
 class NewGame(CreateView):
     # model = TestGame
     # fields = ['start_station', 'goal_station']
@@ -135,6 +140,7 @@ memo: FormViewの処理の流れ（CreateViewもほぼ同じ）
 # レコードの新規作成は、文字通りCreateViewを使おう
 # 21/8/28 createviewにしたことで、保存はできた→変数の受け取りなどどうするか
 # 21/8/29 form使用を復活してフィルターと保存,変数を渡すのに成功！！！！！
+@method_decorator(login_required, name='dispatch')
 class NewChoice(CreateView):
 
     form_class = TestChoiceForm    # forms.pyの呼び出したいformを指定

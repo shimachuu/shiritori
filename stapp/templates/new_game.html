@@ -43,7 +43,7 @@
                     {% for station in prf.mstteststation_set.all %}
                         {
                             'pk': '{{ station.pk }}',
-                            'name': '{{ station.name_kanji }}'
+                            'name': '{{ station }}'
                         },
                     {% endfor %}
                 ],

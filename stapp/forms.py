@@ -36,6 +36,9 @@ class TestChoiceForm(forms.ModelForm):
     class Meta:
         model = TestChoice
         fields = ('game','station')
+        widgets = {
+            'game': forms.HiddenInput,
+        }
 
     # formが画面に表示される前に何をするかを定める
     def __init__(self, *args, **kwargs):

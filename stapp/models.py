@@ -31,7 +31,7 @@ class MstTestStation(models.Model):
     rail_name = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.name_kanji
+        return self.name_kanji + '（' + self.name_hira + '）'
 
 class TestGame(models.Model):
     player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
