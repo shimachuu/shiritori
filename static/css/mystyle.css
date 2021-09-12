@@ -3,13 +3,16 @@
 chromeの更新ボタン右クリック→「キャッシュの消去とハード再読み込み」 */
 
 h2 {
-    color: darkorchid;
+    color: rgb(8, 77, 133);
 }
 
 body {
     padding-left: 15px;
 }
 
+img.icon {
+    
+}
 
 /* ポッチなし */
 ul {
