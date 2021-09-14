@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stapp',
     'import_export',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -83,6 +84,7 @@ WSGI_APPLICATION = 'shiritori.wsgi.application'
     }
 }'''
 
+# システム環境変数にパスワードは書いている（本番は何か考えないといけない？）
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -176,3 +178,5 @@ LOGGING = {
 }
 
 LOGIN_REDIRECT_URL = '/'
+
+AUTH_USER_MODEL = 'accounts.CustomUser'
