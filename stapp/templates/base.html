@@ -27,9 +27,12 @@
             <a href="{% url 'stapp:index' %}">JR駅名しりとりの旅ゲーム</a>
 
             {% if user.is_authenticated %}
-                <p class="top-menu">Hello {{ user.username }} <small>(<a href="{% url 'stapp:logout' %}">Log out</a>)</small></p>
+                <p class="top-menu">Hello {{ user.username }} <small>(<a href="{% url 'account_logout' %}">Log Out</a>)</small></p>
             {% else %}
-                <a href="{% url 'stapp:login' %}" class="top-menu"><span class="glyphicon glyphicon-lock"></span></a>
+                <p>
+                    <a href="{% url 'account_signup' %}" class="top-menu">Sign Up</span></a>
+                    <a href="{% url 'account_login' %}" class="top-menu">Log In</span></a>
+                </p>
             {% endif %}
 
         </nav>

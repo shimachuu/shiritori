@@ -40,7 +40,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'stapp',
     'import_export',
+    
+    # 認証アプリ
     'accounts',
+
+    # allauth設定
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',    
 ]
 
 MIDDLEWARE = [
@@ -180,3 +187,32 @@ LOGGING = {
 LOGIN_REDIRECT_URL = '/'
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
+
+# ---from---allauth設定
+
+SITE_ID = 1
+
+# 認証バックエンド（認証をテストするクラス）
+AUTHENTICATION_BACKENDS = (
+    # 一般用（メアド認証）
+    'allauth.account.auth_backends.AuthenticationBackend',
+    # 管理用（ユーザー名認証）
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+# メアド認証に変更する設定
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_USERNAME_REQUIRED = False
+
+# signupにメアド確認をはさむ
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_REQUIRED = True
+
+# login/out後の遷移先
+LOGIN_REDIRECT_URL = 'stapp:index'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'account_login'
+
+# logoutはクリック一発で実行
+ACCOUNT_LOGOUT_ON_GET = True
+
+# ---to---allauth config
